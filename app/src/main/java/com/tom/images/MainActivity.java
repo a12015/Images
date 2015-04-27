@@ -1,6 +1,7 @@
 package com.tom.images;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.SimpleCursorAdapter;
 
 
 public class MainActivity extends Activity {
@@ -36,7 +38,12 @@ public class MainActivity extends Activity {
         }
         */
         GridView grid = (GridView) findViewById(R.id.grid);
-        ImageAdapter adapter = new ImageAdapter();
+//        ImageAdapter adapter = new ImageAdapter();
+        String[] from = {MediaStore.Images.Media._ID};
+        int[] to = {android.R.id.text1};
+        ImageCursorAdapter adapter = new ImageCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, from , to);
+
+
         grid.setAdapter(adapter);
 
 
@@ -49,6 +56,32 @@ public class MainActivity extends Activity {
             int imageId = c.getInt(c.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID));
             Log.d("TH", id+"/"+data+"/"+imageId);
         }*/
+    }
+
+    class ImageCursorAdapter extends SimpleCursorAdapter{
+        Cursor c;
+        Context context;
+        public ImageCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
+            super(context, layout, c, from, to);
+            this.c = c;
+            this.context = context;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView==null){
+                ImageView img = new ImageView(MainActivity.this);
+                c.moveToPosition(position);
+                int id = c.getInt(c.getColumnIndex(MediaStore.Images.Media._ID));
+                Uri uri = Uri.withAppendedPath(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        id+""
+                );
+                img.setImageURI(uri);
+                convertView = img;
+            }
+            return convertView;
+        }
     }
 
     class ImageAdapter extends BaseAdapter{
