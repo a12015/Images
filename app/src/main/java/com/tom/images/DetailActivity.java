@@ -5,14 +5,17 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.ImageView;
 
 
 public class DetailActivity extends Activity {
 
     private Cursor cursor;
+    private GestureDetector detector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +29,13 @@ public class DetailActivity extends Activity {
         int id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
         Uri uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id+"");
         img.setImageURI(uri);
-
-
+        detector = new GestureDetector(this, (GestureDetector.OnGestureListener) this);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return detector.onTouchEvent(event);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
