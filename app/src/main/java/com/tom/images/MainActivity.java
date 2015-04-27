@@ -2,6 +2,7 @@ package com.tom.images;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,13 +12,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private Cursor cursor;
 
@@ -38,6 +40,7 @@ public class MainActivity extends Activity {
         }
         */
         GridView grid = (GridView) findViewById(R.id.grid);
+        grid.setOnItemClickListener(this);
 //        ImageAdapter adapter = new ImageAdapter();
         String[] from = {MediaStore.Images.Media._ID};
         int[] to = {android.R.id.text1};
@@ -56,6 +59,14 @@ public class MainActivity extends Activity {
             int imageId = c.getInt(c.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID));
             Log.d("TH", id+"/"+data+"/"+imageId);
         }*/
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d("ITEM", position+"");
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra("POS", position);
+        startActivity(intent);
     }
 
     class ImageCursorAdapter extends SimpleCursorAdapter{
