@@ -51,14 +51,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
 
 
-//        Cursor c = getContentResolver().query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-//                null, null, null, null);
-        /*while(c.moveToNext()){
+        Cursor c = getContentResolver().query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+                null, null, null, null);
+        while(c.moveToNext()){
             int id = c.getInt(c.getColumnIndex(MediaStore.Images.Thumbnails._ID));
             String data = c.getString(c.getColumnIndex(MediaStore.Images.Thumbnails.DATA));
             int imageId = c.getInt(c.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID));
             Log.d("TH", id+"/"+data+"/"+imageId);
-        }*/
+        }
     }
 
     @Override
