@@ -2,6 +2,7 @@ package com.tom.images;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -24,7 +25,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 null, null, null, null);
-
+        /*
         while(cursor.moveToNext()){
             int id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
             //String data = c.getString(c.getColumnIndex(MediaStore.Images.Thumbnails.DATA));
@@ -33,12 +34,10 @@ public class MainActivity extends Activity {
             String file = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
             Log.d("IMG", id+"/"+file);
         }
+        */
         GridView grid = (GridView) findViewById(R.id.grid);
-
-
-
-
-//        grid.setAdapter(adapter);
+        ImageAdapter adapter = new ImageAdapter();
+        grid.setAdapter(adapter);
 
 
 
@@ -74,8 +73,14 @@ public class MainActivity extends Activity {
             if (convertView==null){
                 ImageView img = new ImageView(MainActivity.this);
                 cursor.moveToPosition(position);
-                String file = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-//                img.set
+//                String file = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+
+                int id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
+                Uri uri = Uri.withAppendedPath(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        id+""
+                );
+                img.setImageURI(uri);
                 convertView = img;
             }
             return convertView;
