@@ -15,14 +15,24 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Cursor c = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, null, null, null);
+        while(c.moveToNext()){
+            int id = c.getInt(c.getColumnIndex(MediaStore.Images.Media._ID));
+            //String data = c.getString(c.getColumnIndex(MediaStore.Images.Thumbnails.DATA));
+            //int imageId = c.getInt(c.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID));
+            Log.d("IMG", id+"/");
+        }
+        /*
         Cursor c = getContentResolver().query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
                 null, null, null, null);
         while(c.moveToNext()){
             int id = c.getInt(c.getColumnIndex(MediaStore.Images.Thumbnails._ID));
             String data = c.getString(c.getColumnIndex(MediaStore.Images.Thumbnails.DATA));
             int imageId = c.getInt(c.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID));
-            Log.d("THM", id+"/"+data+"/"+imageId);
+            Log.d("TH", id+"/"+data+"/"+imageId);
         }
+        */
     }
 
 
