@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,24 +13,27 @@ import android.view.MotionEvent;
 import android.widget.ImageView;
 
 
-public class DetailActivity extends Activity {
+public class DetailActivity extends Activity implements GestureDetector.OnGestureListener{
 
     private Cursor cursor;
+    private int pos;
     private GestureDetector detector;
+    private ImageView img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        int pos = getIntent().getIntExtra("POS", -1);
+        detector = new GestureDetector(this, this);
+
+        pos = getIntent().getIntExtra("POS", -1);
         cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 null, null, null, null);
         cursor.moveToPosition(pos);
-        ImageView img = (ImageView) findViewById(R.id.img);
+        img = (ImageView) findViewById(R.id.img);
         int id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
         Uri uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id+"");
         img.setImageURI(uri);
-        detector = new GestureDetector(this, (GestureDetector.OnGestureListener) this);
     }
 
     @Override
@@ -57,5 +61,63 @@ public class DetailActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        Log.d("GEST", "onDown");
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+        Log.d("GEST", "onShowPress");
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        Log.d("GEST", "onSingleTapUp");
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.d("GEST", "onScroll");
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        Log.d("GEST", "onLongPress");
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2,
+                           float velocityX, float velocityY) {
+        Log.d("GEST", "onFling");
+        float distance = e2.getX()-e1.getX();
+        if (distance>100) { //to the RIGHT
+            Log.d("ONFLING", "to the right");
+            if (cursor.moveToPrevious()){
+                int id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
+                Uri uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id+"");
+                img.setImageURI(uri);
+            }
+        }else if (distance<-100){  // to the LEFT
+            Log.d("ONFLING", "to the left");
+            if (cursor.moveToNext()){
+                int id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
+                Uri uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id+"");
+                img.setImageURI(uri);
+            }else{
+                cursor.moveToFirst();
+                int id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
+                Uri uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id+"");
+                img.setImageURI(uri);
+            }
+        }
+        return false;
     }
 }
